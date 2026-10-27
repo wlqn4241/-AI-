@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: psych-ai-assistant
+  datasource:
+    url: jdbc:mysql://localhost:3306/psych_ai?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root            # TODO: 改成你自己的 MySQL 密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 10000
+  jpa:
+    hibernate:
+      ddl-auto: update        # 自动建表，生产环境建议改为 none + 手写 SQL
+    open-in-view: false
+    show-sql: false
+
+deepseek:
+  api-key: ${DEEPSEEK_API_KEY:sk-your-api-key}   # TODO: 通过环境变量注入你的 DeepSeek API Key
+  base-url: https://api.deepseek.com
+  model: deepseek-chat
+  connect-timeout-seconds: 10
+  read-timeout-seconds: 60
+  stream-timeout-seconds: 90
+  history-limit: 20            # 每次对话携带的最大历史消息条数（控制 token 成本）
+
+jwt:
+  # 生产环境务必替换为随机长字符串并通过环境变量注入（至少 32 字节）
+  secret: ${JWT_SECRET:PsychAiAssistant_Jwt_Secret_2026_Please_Change_Me_0123456789}
+  expire-hours: 72
+
+logging:
+  level:
+    com.psych.ai: INFO

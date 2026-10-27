@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暖心 · 心理健康 AI 助手</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #f4f6fb; color: #2b2f36; height: 100vh; overflow: hidden; }
+  button { cursor: pointer; border: none; border-radius: 8px; font-family: inherit; }
+  input, textarea, select { font-family: inherit; border: 1px solid #d9dee8; border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; width: 100%; }
+  input:focus, textarea:focus { border-color: #6c8cff; }
+  .btn-primary { background: #5b7cfa; color: #fff; padding: 10px 18px; font-size: 14px; }
+  .btn-primary:hover { background: #4a6ae8; }
+  .btn-ghost { background: #eef1f8; color: #4a5568; padding: 8px 14px; font-size: 13px; }
+  .btn-ghost:hover { background: #e2e7f2; }
+  .hidden { display: none !important; }
+
+  /* ===== 登录页 ===== */
+  #authView { display: flex; align-items: center; justify-content: center; height: 100vh; background: linear-gradient(135deg, #e8eeff 0%, #f6e9f7 100%); }
+  .auth-card { width: 380px; background: #fff; border-radius: 16px; padding: 36px 32px; box-shadow: 0 12px 40px rgba(90,110,200,.15); }
+  .auth-card h1 { font-size: 22px; margin-bottom: 6px; color: #3d4a9e; }
+  .auth-card .sub { color: #8a92a6; font-size: 13px; margin-bottom: 22px; }
+  .auth-card input { margin-bottom: 14px; }
+  .auth-switch { text-align: center; margin-top: 14px; font-size: 13px; color: #6c8cff; cursor: pointer; }
+  .auth-tip { margin-top: 16px; font-size: 12px; color: #a0a7b8; line-height: 1.7; }
+
+  /* ===== 主框架 ===== */
+  #appView { display: flex; flex-direction: column; height: 100vh; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #fff; border-bottom: 1px solid #eceff5; }
+  header .logo { font-size: 18px; font-weight: bold; color: #3d4a9e; }
+  header .user { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #6a7284; }
+  nav { display: flex; gap: 6px; padding: 10px 24px; background: #fff; border-bottom: 1px solid #eceff5; }
+  nav .tab { padding: 8px 20px; border-radius: 20px; background: transparent; color: #6a7284; font-size: 14px; }
+  nav .tab.active { background: #5b7cfa; color: #fff; }
+  main { flex: 1; overflow: hidden; }
+  section.tab-panel { height: 100%; overflow: auto; padding: 20px 24px; }
+
+  /* ===== 对话 ===== */
+  .chat-layout { display: flex; gap: 16px; height: 100%; }
+  .session-list { width: 230px; background: #fff; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; }
+  .session-item { padding: 10px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #4a5568; }
+  .session-item:hover { background: #f0f3fb; }
+  .session-item.active { background: #e8edff; color: #3d4a9e; }
+  .session-item .del { color: #c0c6d4; font-size: 12px; }
+  .session-item .del:hover { color: #e05a5a; }
+  .chat-main { flex: 1; display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; }
+  .msg-area { flex: 1; overflow: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 72%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+  .msg.user { align-self: flex-end; background: #5b7cfa; color: #fff; border-bottom-right-radius: 4px; }
+  .msg.assistant { align-self: flex-start; background: #f2f4fa; color: #333; border-bottom-left-radius: 4px; }
+  .msg.assistant.crisis { background: #fff4f4; border: 1px solid #f3c1c1; }
+  .chat-input { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid #eceff5; }
+  .chat-input textarea { resize: none; height: 52px; }
+  .chat-empty { margin: auto; text-align: center; color: #9aa2b5; }
+  .chat-empty .big { font-size: 40px; margin-bottom: 10px; }
+
+  /* ===== 情绪 ===== */
+  .emotion-layout { display: grid; grid-template-columns: 360px 1fr; gap: 16px; height: 100%; }
+  .card { background: #fff; border-radius: 12px; padding: 20px; }
+  .card h3 { font-size: 15px; margin-bottom: 14px; color: #3d4a9e; }
+  .mood-row { display: flex; justify-content: space-between; margin: 10px 0 16px; }
+  .mood-opt { font-size: 26px; padding: 8px 10px; border-radius: 10px; border: 2px solid transparent; background: transparent; transition: all .15s; }
+  .mood-opt.sel { border-color: #5b7cfa; background: #eef2ff; transform: scale(1.12); }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .tag-chip { padding: 6px 14px; border-radius: 16px; background: #f0f3fb; color: #5a6376; font-size: 13px; border: 1px solid transparent; }
+  .tag-chip.sel { background: #e8edff; color: #3d4a9e; border-color: #9db0ff; }
+  .stats-summary { display: flex; gap: 14px; margin-bottom: 14px; }
+  .stat-box { flex: 1; background: #f7f9ff; border-radius: 10px; padding: 12px; text-align: center; }
+  .stat-box .v { font-size: 20px; font-weight: bold; color: #3d4a9e; }
+  .stat-box .k { font-size: 12px; color: #8a92a6; margin-top: 4px; }
+  .chart { width: 100%; height: 260px; }
+  .diary-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow: auto; }
+  .diary-item { background: #f7f9ff; border-radius: 10px; padding: 10px 14px; font-size: 13px; }
+  .diary-item .meta { color: #8a92a6; font-size: 12px; margin-bottom: 4px; }
+
+  /* ===== 测评 ===== */
+  .scale-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .scale-card { background: #fff; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .scale-card h3 { color: #3d4a9e; font-size: 16px; }
+  .scale-card p { font-size: 13px; color: #7a8296; line-height: 1.7; flex: 1; }
+  .quiz-view { max-width: 760px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 26px; }
+  .quiz-q { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px dashed #e7eaf3; }
+  .quiz-q .qtext { font-size: 14px; margin-bottom: 8px; }
+  .quiz-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .quiz-opt { padding: 6px 14px; border-radius: 16px; background: #f0f3fb; font-size: 13px; border: 1px solid transparent; }
+  .quiz-opt.sel { background: #5b7cfa; color: #fff; }
+  .report-box { background: #f7f9ff; border-radius: 10px; padding: 18px; white-space: pre-wrap; font-size: 14px; line-height: 1.8; margin-top: 14px; }
+  .severity-pill { display: inline-block; padding: 4px 14px; border-radius: 14px; font-size: 13px; margin-left: 8px; }
+  .sev-low { background: #e6f7ec; color: #2e9e5b; } .sev-mid { background: #fff6e5; color: #d98a00; } .sev-high { background: #fdeaea; color: #d84a4a; }
+
+  /* ===== 报告 ===== */
+  .record-item { background: #fff; border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  .record-item:hover { box-shadow: 0 4px 14px rgba(90,110,200,.12); }
+  .record-item .info .name { font-size: 14px; font-weight: bold; }
+  .record-item .info .time { font-size: 12px; color: #9aa2b5; margin-top: 4px; }
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333c52; color: #fff; padding: 10px 22px; border-radius: 10px; font-size: 14px; z-index: 999; display: none; }
+</style>
+</head>
+<body>
+
+<!-- 登录 / 注册 -->
+<div id="authView">
+  <div class="auth-card">
+    <h1>暖心 · 心理健康助手</h1>
+    <div class="sub">倾诉、记录、了解自己 —— AI 温柔陪伴</div>
+    <div id="loginForm">
+      <input id="loginUsername" placeholder="用户名" maxlength="20">
+      <input id="loginPassword" type="password" placeholder="密码" maxlength="32">
+      <button class="btn-primary" style="width:100%" onclick="doLogin()">登 录</button>
+      <div class="auth-switch" onclick="switchAuth(false)">没有账号？去注册 →</div>
+    </div>
+    <div id="registerForm" class="hidden">
+      <input id="regUsername" placeholder="用户名（3-20 位字母数字）" maxlength="20">
+      <input id="regNickname" placeholder="昵称（可选）" maxlength="20">
+      <input id="regPassword" type="password" placeholder="密码（6-32 位）" maxlength="32">
+      <button class="btn-primary" style="width:100%" onclick="doRegister()">注 册</button>
+      <div class="auth-switch" onclick="switchAuth(true)">已有账号？去登录 →</div>
+    </div>
+    <div class="auth-tip">本应用为心理健康陪伴工具，不构成医疗诊断。<br>如遇紧急情况，请拨打 24 小时心理援助热线 <b>12356</b></div>
+  </div>
+</div>
+
+<!-- 主应用 -->
+<div id="appView" class="hidden">
+  <header>
+    <div class="logo">💚 暖心 · 心理健康 AI 助手</div>
+    <div class="user"><span id="nickname"></span><button class="btn-ghost" onclick="logout()">退出</button></div>
+  </header>
+  <nav>
+    <button class="tab active" data-tab="chat" onclick="switchTab('chat')">心理咨询</button>
+    <button class="tab" data-tab="emotion" onclick="switchTab('emotion')">情绪记录</button>
+    <button class="tab" data-tab="assess" onclick="switchTab('assess')">心理测评</button>
+    <button class="tab" data-tab="report" onclick="switchTab('report')">我的报告</button>
+  </nav>
+  <main>
+    <!-- 对话 -->
+    <section class="tab-panel" id="tab-chat">
+      <div class="chat-layout">
+        <div class="session-list">
+          <button class="btn-primary" style="width:100%" onclick="newSession()">＋ 新的对话</button>
+          <div id="sessionItems" style="display:flex;flex-direction:column;gap:4px"></div>
+        </div>
+        <div class="chat-main">
+          <div class="msg-area" id="msgArea">
+            <div class="chat-empty"><div class="big">🌱</div>选择一个对话，或点击「新的对话」<br>把今天的心情说给我听</div>
+          </div>
+          <div class="chat-input">
+            <textarea id="chatInput" placeholder="今天感觉怎么样？想聊点什么？（Enter 发送，Shift+Enter 换行）"></textarea>
+            <button class="btn-primary" onclick="sendMessage()" id="sendBtn">发送</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 情绪 -->
+    <section class="tab-panel hidden" id="tab-emotion">
+      <div class="emotion-layout">
+        <div class="card">
+          <h3>📝 记录今天的心情</h3>
+          <input type="date" id="emoDate" style="margin-bottom:12px">
+          <div style="font-size:13px;color:#7a8296">此刻的心情</div>
+          <div class="mood-row" id="moodRow"></div>
+          <div style="font-size:13px;color:#7a8296">情绪标签</div>
+          <div class="tag-row" id="tagRow"></div>
+          <textarea id="emoContent" rows="4" placeholder="今天发生了什么？想记下点什么…（选填）"></textarea>
+          <button class="btn-primary" style="width:100%;margin-top:12px" onclick="saveEmotion()">保存记录</button>
+        </div>
+        <div class="card">
+          <h3>📈 情绪趋势（近 14 天）</h3>
+          <div class="stats-summary">
+            <div class="stat-box"><div class="v" id="statAvg">-</div><div class="k">平均心情分</div></div>
+            <div class="stat-box"><div class="v" id="statCount">-</div><div class="k">记录天数</div></div>
+          </div>
+          <div class="chart" id="moodChart"></div>
+          <div class="chart" id="tagChart" style="height:200px"></div>
+          <h3 style="margin-top:14px">📔 情绪日记</h3>
+          <div class="diary-list" id="diaryList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 测评 -->
+    <section class="tab-panel hidden" id="tab-assess">
+      <div id="scaleGrid"></div>
+      <div id="quizView" class="quiz-view hidden"></div>
+    </section>
+
+    <!-- 报告 -->
+    <section class="tab-panel hidden" id="tab-report">
+      <div class="card" style="max-width:860px;margin:0 auto">
+        <h3>🗂 我的测评报告</h3>
+        <div id="recordList"></div>
+        <div id="recordDetail" class="report-box hidden"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= 基础 ================= */
+const TOKEN_KEY = 'psych_token', NICK_KEY = 'psych_nick';
+const $ = id => document.getElementById(id);
+const token = () => localStorage.getItem(TOKEN_KEY) || '';
+let currentSessionId = null, currentScale = null, quizAnswers = [], chatLoading = false;
+
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+async function api(path, method = 'GET', body = null) {
+  const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token() } };
+  if (body) opts.body = JSON.stringify(body);
+  const resp = await fetch(path, opts);
+  if (resp.status === 401) { logout(); throw new Error('请先登录'); }
+  const json = await resp.json();
+  if (json.code !== 0) throw new Error(json.message || '请求失败');
+  return json.data;
+}
+function logout() { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(NICK_KEY); location.reload(); }
+function switchAuth(toLogin) { $('loginForm').classList.toggle('hidden', !toLogin); $('registerForm').classList.toggle('hidden', toLogin); }
+
+async function doLogin() {
+  try {
+    const d = await api('/api/auth/login', 'POST', { username: $('loginUsername').value.trim(), password: $('loginPassword').value });
+    enterApp(d);
+  } catch (e) { toast(e.message); }
+}
+async function doRegister() {
+  try {
+    const d = await api('/api/auth/register', 'POST', { username: $('regUsername').value.trim(), password: $('regPassword').value, nickname: $('regNickname').value.trim() });
+    enterApp(d);
+  } catch (e) { toast(e.message); }
+}
+function enterApp(d) {
+  localStorage.setItem(TOKEN_KEY, d.token);
+  localStorage.setItem(NICK_KEY, d.nickname);
+  $('authView').classList.add('hidden');
+  $('appView').classList.remove('hidden');
+  $('nickname').textContent = '👋 ' + d.nickname;
+  initChat(); initEmotion(); loadScales();
+}
+
+/* ================= 对话 ================= */
+async function initChat() { await loadSessions(); if (!currentSessionId) newSession(); }
+async function loadSessions() {
+  const list = await api('/api/chat/sessions');
+  $('sessionItems').innerHTML = list.map(s =>
+    `<div class="session-item ${s.id === currentSessionId ? 'active' : ''}" onclick="openSession(${s.id})">
+       <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.title || '新对话'}</span>
+       <span class="del" onclick="event.stopPropagation();delSession(${s.id})">✕</span></div>`).join('');
+}
+async function newSession() {
+  const s = await api('/api/chat/sessions', 'POST');
+  currentSessionId = s.id;
+  $('msgArea').innerHTML = `<div class="chat-empty"><div class="big">🌱</div>把今天的心情说给我听</div>`;
+  await loadSessions();
+}
+async function openSession(id) {
+  currentSessionId = id;
+  const msgs = await api(`/api/chat/sessions/${id}/messages`);
+  renderMessages(msgs);
+  await loadSessions();
+}
+async function delSession(id) {
+  if (!confirm('删除这个对话？')) return;
+  await api(`/api/chat/sessions/${id}`, 'DELETE');
+  if (currentSessionId === id) { currentSessionId = null; newSession(); }
+  loadSessions();
+}
+function renderMessages(msgs) {
+  $('msgArea').innerHTML = msgs.length ? msgs.map(m => msgHtml(m.role, m.content)).join('')
+    : `<div class="chat-empty"><div class="big">🌱</div>把今天的心情说给我听</div>`;
+  $('msgArea').scrollTop = $('msgArea').scrollHeight;
+}
+function msgHtml(role, content) {
+  const crisis = role === 'assistant' && content.includes('12356') && content.length > 80;
+  return `<div class="msg ${role} ${crisis ? 'crisis' : ''}">${escapeHtml(content)}</div>`;
+}
+function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+async function sendMessage() {
+  const input = $('chatInput');
+  const content = input.value.trim();
+  if (!content || chatLoading || !currentSessionId) return;
+  input.value = ''; chatLoading = true; $('sendBtn').disabled = true;
+
+  const area = $('msgArea');
+  const empty = area.querySelector('.chat-empty'); if (empty) empty.remove();
+  area.insertAdjacentHTML('beforeend', msgHtml('user', content));
+  area.insertAdjacentHTML('beforeend', `<div class="msg assistant" id="streamingMsg">…</div>`);
+  area.scrollTop = area.scrollHeight;
+
+  try {
+    const resp = await fetch(`/api/chat/sessions/${currentSessionId}/stream`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token() },
+      body: JSON.stringify({ content })
+    });
+    if (!resp.ok || !resp.body) throw new Error('连接失败');
+    const reader = resp.body.getReader(), decoder = new TextDecoder();
+    let buf = '', full = '';
+    const el = $('streamingMsg');
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const parts = buf.split('\n\n'); buf = parts.pop();
+      for (const part of parts) {
+        const dataLines = part.split('\n').filter(l => l.startsWith('data:')).map(l => l.slice(5).replace(/^ /, ''));
+        if (!dataLines.length) continue;
+        const data = dataLines.join('\n');   // 多行内容按 SSE 规范还原换行
+        if (data === '[DONE]') continue;
+          full += data;
+          if (el) { el.textContent = full; area.scrollTop = area.scrollHeight; }
+        }
+      }
+    }
+    loadSessions();
+  } catch (e) {
+    const el = $('streamingMsg');
+    if (el && !el.textContent.trim().length) el.textContent = '（网络异常，请重试）';
+    toast('网络异常：' + e.message);
+  } finally {
+    chatLoading = false; $('sendBtn').disabled = false;
+  }
+}
+$('chatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+/* ================= 情绪 ================= */
+const MOODS = [[1, '😢'], [2, '😟'], [3, '😐'], [4, '🙂'], [5, '😄']];
+const TAGS = ['开心', '平静', '焦虑', '低落', '愤怒', '疲惫', '压力大', '充实', '孤独', '感恩'];
+let selMood = 3; const selTags = new Set();
+let moodChart = null, tagChart = null;
+
+function initEmotion() {
+  $('emoDate').value = new Date().toISOString().slice(0, 10);
+  $('moodRow').innerHTML = MOODS.map(([v, e]) =>
+    `<button class="mood-opt ${v === selMood ? 'sel' : ''}" data-mood="${v}" onclick="pickMood(${v})">${e}</button>`).join('');
+  $('tagRow').innerHTML = TAGS.map(t =>
+    `<span class="tag-chip" onclick="pickTag(this,'${t}')">${t}</span>`).join('');
+  loadEmotionData();
+}
+function pickMood(v) { selMood = v; document.querySelectorAll('.mood-opt').forEach(b => b.classList.toggle('sel', +b.dataset.mood === v)); }
+function pickTag(el, t) { el.classList.toggle('sel'); selTags.has(t) ? selTags.delete(t) : selTags.add(t); }
+
+async function saveEmotion() {
+  try {
+    await api('/api/emotion', 'POST', {
+      date: $('emoDate').value, mood: selMood, tags: [...selTags], content: $('emoContent').value
+    });
+    toast('已保存今日心情 💚');
+    $('emoContent').value = '';
+    loadEmotionData();
+  } catch (e) { toast(e.message); }
+}
+async function loadEmotionData() {
+  const stats = await api('/api/emotion/stats?days=14');
+  const list = await api('/api/emotion/list');
+  $('statAvg').textContent = stats.avgMood || '-';
+  $('statCount').textContent = stats.count;
+
+  if (window.echarts) {
+    moodChart = moodChart || echarts.init($('moodChart'));
+    moodChart.setOption({
+      tooltip: { trigger: 'axis' },
+      grid: { left: 40, right: 16, top: 24, bottom: 28 },
+      xAxis: { type: 'category', data: stats.trend.map(t => t.date.slice(5)) },
+      yAxis: { type: 'value', min: 0, max: 5 },
+      series: [{ type: 'line', data: stats.trend.map(t => t.mood), smooth: true, areaStyle: { opacity: .15 }, itemStyle: { color: '#5b7cfa' } }]
+    });
+    tagChart = tagChart || echarts.init($('tagChart'));
+    tagChart.setOption({
+      tooltip: {},
+      grid: { left: 70, right: 20, top: 8, bottom: 24 },
+      xAxis: { type: 'value' },
+      yAxis: { type: 'category', data: stats.tags.map(t => t.name).reverse() },
+      series: [{ type: 'bar', data: stats.tags.map(t => t.count).reverse(), itemStyle: { color: '#8fa5ff' }, barWidth: 14 }]
+    });
+  }
+  $('diaryList').innerHTML = list.length ? list.map(r => `
+    <div class="diary-item">
+      <div class="meta">${r.date} · 心情 ${'★'.repeat(r.mood)}${'☆'.repeat(5 - r.mood)} ${r.tags ? '· ' + r.tags : ''}</div>
+      <div>${escapeHtml(r.content || '')}</div>
+    </div>`).join('') : '<div style="color:#9aa2b5;font-size:13px">还没有记录，先记一条吧～</div>';
+}
+
+/* ================= 测评 ================= */
+async function loadScales() {
+  const scales = await api('/api/assessment/scales');
+  $('scaleGrid').innerHTML = `<h3 style="margin-bottom:14px;color:#3d4a9e">🧭 选择一份量表开始测评</h3>` + scales.map(s => `
+    <div class="scale-card"><h3>${s.name}</h3><p>${s.description}</p>
+    <button class="btn-primary" onclick="startScale('${s.code}')">开始测评</button></div>`).join('');
+  $('scaleGrid').className = 'scale-grid';
+}
+async function startScale(code) {
+  currentScale = await api(`/api/assessment/scales/${code}`);
+  quizAnswers = new Array(JSON.parse(currentScale.questionsJson).length).fill(null);
+  renderQuiz();
+}
+function renderQuiz() {
+  const questions = JSON.parse(currentScale.questionsJson);
+  $('scaleGrid').classList.add('hidden');
+  const qv = $('quizView'); qv.classList.remove('hidden');
+  qv.innerHTML = `<h3 style="color:#3d4a9e;margin-bottom:6px">${currentScale.name}</h3>
+    <p style="font-size:13px;color:#8a92a6;margin-bottom:18px">${currentScale.instruction}</p>` +
+    questions.map((q, i) => `
+      <div class="quiz-q">
+        <div class="qtext">${i + 1}. ${q.text}</div>
+        <div class="quiz-opts">${q.options.map((o, j) =>
+          `<span class="quiz-opt" id="q${i}o${j}" onclick="pickOpt(${i},${j})">${o.label}</span>`).join('')}</div>
+      </div>`).join('') +
+    `<div style="display:flex;gap:10px;margin-top:18px">
+       <button class="btn-ghost" onclick="backToScales()">返回</button>
+       <button class="btn-primary" style="flex:1" onclick="submitScale()">提交答卷</button>
+     </div>`;
+}
+function pickOpt(i, j) {
+  quizAnswers[i] = j;
+  document.querySelectorAll(`[id^="q${i}o"]`).forEach(el => el.classList.remove('sel'));
+  $(`q${i}o${j}`).classList.add('sel');
+}
+function backToScales() { $('quizView').classList.add('hidden'); $('scaleGrid').classList.remove('hidden'); }
+async function submitScale() {
+  if (quizAnswers.includes(null)) { toast('还有题目未作答'); return; }
+  try {
+    const record = await api(`/api/assessment/scales/${currentScale.code}/submit`, 'POST', { answers: quizAnswers });
+    $('quizView').innerHTML = `
+      <h3 style="color:#3d4a9e">测评完成：${record.scaleName}
+        <span class="severity-pill ${sevClass(record.score, record.scaleCode)}">${record.severity}</span></h3>
+      <div style="margin-top:10px;font-size:26px;color:#3d4a9e">${record.score} <span style="font-size:14px;color:#8a92a6">分</span></div>
+      <div class="report-box">${escapeHtml(record.report)}</div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn-ghost" onclick="backToScales();loadScales()">返回量表列表</button>
+        <button class="btn-primary" onclick="switchTab('report')">查看我的报告</button>
+      </div>`;
+    toast('测评完成 💚');
+  } catch (e) { toast(e.message); }
+}
+function sevClass(score, code) {
+  if (code === 'PHQ9') return score >= 15 ? 'sev-high' : score >= 5 ? 'sev-mid' : 'sev-low';
+  if (code === 'GAD7') return score >= 15 ? 'sev-high' : score >= 5 ? 'sev-mid' : 'sev-low';
+  return score >= 27 ? 'sev-high' : score >= 14 ? 'sev-mid' : 'sev-low';
+}
+
+/* ================= 报告 ================= */
+async function loadRecords() {
+  const records = await api('/api/assessment/records');
+  $('recordList').innerHTML = records.length ? records.map(r => `
+    <div class="record-item" onclick="viewRecord(${r.id})">
+      <div class="info"><div class="name">${r.scaleName} · ${r.score} 分 · ${r.severity}</div>
+      <div class="time">${r.createdAt.replace('T', ' ').slice(0, 16)}</div></div>
+      <span style="color:#8a92a6;font-size:13px">查看报告 →</span>
+    </div>`).join('') : '<div style="color:#9aa2b5;font-size:13px">还没有测评记录，去「心理测评」页做一份吧</div>';
+  $('recordDetail').classList.add('hidden');
+}
+async function viewRecord(id) {
+  const r = await api(`/api/assessment/records/${id}`);
+  const d = $('recordDetail');
+  d.classList.remove('hidden');
+  d.textContent = r.report;
+  d.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ================= Tab 切换 ================= */
+function switchTab(name) {
+  document.querySelectorAll('nav .tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  ['chat', 'emotion', 'assess', 'report'].forEach(n => $('tab-' + n).classList.toggle('hidden', n !== name));
+  if (name === 'emotion') loadEmotionData();
+  if (name === 'report') loadRecords();
+}
+
+/* ================= 启动 ================= */
+(function init() {
+  if (token()) {
+    $('authView').classList.add('hidden');
+    $('appView').classList.remove('hidden');
+    $('nickname').textContent = '👋 ' + (localStorage.getItem(NICK_KEY) || '');
+    initChat(); initEmotion(); loadScales();
+  }
+})();
+</script>
+</body>
+</html>
