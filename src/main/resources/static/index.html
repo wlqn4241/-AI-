@@ -16,8 +16,6 @@
   .btn-ghost { background: #eef1f8; color: #4a5568; padding: 8px 14px; font-size: 13px; }
   .btn-ghost:hover { background: #e2e7f2; }
   .hidden { display: none !important; }
-
-  /* ===== 登录页 ===== */
   #authView { display: flex; align-items: center; justify-content: center; height: 100vh; background: linear-gradient(135deg, #e8eeff 0%, #f6e9f7 100%); }
   .auth-card { width: 380px; background: #fff; border-radius: 16px; padding: 36px 32px; box-shadow: 0 12px 40px rgba(90,110,200,.15); }
   .auth-card h1 { font-size: 22px; margin-bottom: 6px; color: #3d4a9e; }
@@ -25,8 +23,6 @@
   .auth-card input { margin-bottom: 14px; }
   .auth-switch { text-align: center; margin-top: 14px; font-size: 13px; color: #6c8cff; cursor: pointer; }
   .auth-tip { margin-top: 16px; font-size: 12px; color: #a0a7b8; line-height: 1.7; }
-
-  /* ===== 主框架 ===== */
   #appView { display: flex; flex-direction: column; height: 100vh; }
   header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #fff; border-bottom: 1px solid #eceff5; }
   header .logo { font-size: 18px; font-weight: bold; color: #3d4a9e; }
@@ -36,8 +32,6 @@
   nav .tab.active { background: #5b7cfa; color: #fff; }
   main { flex: 1; overflow: hidden; }
   section.tab-panel { height: 100%; overflow: auto; padding: 20px 24px; }
-
-  /* ===== 对话 ===== */
   .chat-layout { display: flex; gap: 16px; height: 100%; }
   .session-list { width: 230px; background: #fff; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; }
   .session-item { padding: 10px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #4a5568; }
@@ -55,8 +49,6 @@
   .chat-input textarea { resize: none; height: 52px; }
   .chat-empty { margin: auto; text-align: center; color: #9aa2b5; }
   .chat-empty .big { font-size: 40px; margin-bottom: 10px; }
-
-  /* ===== 情绪 ===== */
   .emotion-layout { display: grid; grid-template-columns: 360px 1fr; gap: 16px; height: 100%; }
   .card { background: #fff; border-radius: 12px; padding: 20px; }
   .card h3 { font-size: 15px; margin-bottom: 14px; color: #3d4a9e; }
@@ -74,8 +66,6 @@
   .diary-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow: auto; }
   .diary-item { background: #f7f9ff; border-radius: 10px; padding: 10px 14px; font-size: 13px; }
   .diary-item .meta { color: #8a92a6; font-size: 12px; margin-bottom: 4px; }
-
-  /* ===== 测评 ===== */
   .scale-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
   .scale-card { background: #fff; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
   .scale-card h3 { color: #3d4a9e; font-size: 16px; }
@@ -89,8 +79,6 @@
   .report-box { background: #f7f9ff; border-radius: 10px; padding: 18px; white-space: pre-wrap; font-size: 14px; line-height: 1.8; margin-top: 14px; }
   .severity-pill { display: inline-block; padding: 4px 14px; border-radius: 14px; font-size: 13px; margin-left: 8px; }
   .sev-low { background: #e6f7ec; color: #2e9e5b; } .sev-mid { background: #fff6e5; color: #d98a00; } .sev-high { background: #fdeaea; color: #d84a4a; }
-
-  /* ===== 报告 ===== */
   .record-item { background: #fff; border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .record-item:hover { box-shadow: 0 4px 14px rgba(90,110,200,.12); }
   .record-item .info .name { font-size: 14px; font-weight: bold; }
@@ -99,7 +87,6 @@
 </style>
 </head>
 <body>
-
 <!-- 登录 / 注册 -->
 <div id="authView">
   <div class="auth-card">
@@ -121,7 +108,6 @@
     <div class="auth-tip">本应用为心理健康陪伴工具，不构成医疗诊断。<br>如遇紧急情况，请拨打 24 小时心理援助热线 <b>12356</b></div>
   </div>
 </div>
-
 <!-- 主应用 -->
 <div id="appView" class="hidden">
   <header>
@@ -135,7 +121,6 @@
     <button class="tab" data-tab="report" onclick="switchTab('report')">我的报告</button>
   </nav>
   <main>
-    <!-- 对话 -->
     <section class="tab-panel" id="tab-chat">
       <div class="chat-layout">
         <div class="session-list">
@@ -153,8 +138,6 @@
         </div>
       </div>
     </section>
-
-    <!-- 情绪 -->
     <section class="tab-panel hidden" id="tab-emotion">
       <div class="emotion-layout">
         <div class="card">
@@ -180,14 +163,10 @@
         </div>
       </div>
     </section>
-
-    <!-- 测评 -->
     <section class="tab-panel hidden" id="tab-assess">
       <div id="scaleGrid"></div>
       <div id="quizView" class="quiz-view hidden"></div>
     </section>
-
-    <!-- 报告 -->
     <section class="tab-panel hidden" id="tab-report">
       <div class="card" style="max-width:860px;margin:0 auto">
         <h3>🗂 我的测评报告</h3>
@@ -197,11 +176,8 @@
     </section>
   </main>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-/* ================= 基础 ================= */
 const TOKEN_KEY = 'psych_token', NICK_KEY = 'psych_nick';
 const $ = id => document.getElementById(id);
 const token = () => localStorage.getItem(TOKEN_KEY) || '';
@@ -224,16 +200,12 @@ function logout() { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(
 function switchAuth(toLogin) { $('loginForm').classList.toggle('hidden', !toLogin); $('registerForm').classList.toggle('hidden', toLogin); }
 
 async function doLogin() {
-  try {
-    const d = await api('/api/auth/login', 'POST', { username: $('loginUsername').value.trim(), password: $('loginPassword').value });
-    enterApp(d);
-  } catch (e) { toast(e.message); }
+  try { const d = await api('/api/auth/login', 'POST', { username: $('loginUsername').value.trim(), password: $('loginPassword').value }); enterApp(d); }
+  catch (e) { toast(e.message); }
 }
 async function doRegister() {
-  try {
-    const d = await api('/api/auth/register', 'POST', { username: $('regUsername').value.trim(), password: $('regPassword').value, nickname: $('regNickname').value.trim() });
-    enterApp(d);
-  } catch (e) { toast(e.message); }
+  try { const d = await api('/api/auth/register', 'POST', { username: $('regUsername').value.trim(), password: $('regPassword').value, nickname: $('regNickname').value.trim() }); enterApp(d); }
+  catch (e) { toast(e.message); }
 }
 function enterApp(d) {
   localStorage.setItem(TOKEN_KEY, d.token);
@@ -244,7 +216,6 @@ function enterApp(d) {
   initChat(); initEmotion(); loadScales();
 }
 
-/* ================= 对话 ================= */
 async function initChat() { await loadSessions(); if (!currentSessionId) newSession(); }
 async function loadSessions() {
   const list = await api('/api/chat/sessions');
@@ -280,208 +251,233 @@ function msgHtml(role, content) {
   const crisis = role === 'assistant' && content.includes('12356') && content.length > 80;
   return `<div class="msg ${role} ${crisis ? 'crisis' : ''}">${escapeHtml(content)}</div>`;
 }
-function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function escapeHtml(s) { return String(s === null || s === undefined ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 async function sendMessage() {
+  if (chatLoading) return;
   const input = $('chatInput');
-  const content = input.value.trim();
-  if (!content || chatLoading || !currentSessionId) return;
-  input.value = ''; chatLoading = true; $('sendBtn').disabled = true;
-
-  const area = $('msgArea');
-  const empty = area.querySelector('.chat-empty'); if (empty) empty.remove();
-  area.insertAdjacentHTML('beforeend', msgHtml('user', content));
-  area.insertAdjacentHTML('beforeend', `<div class="msg assistant" id="streamingMsg">…</div>`);
-  area.scrollTop = area.scrollHeight;
-
+  const text = input.value.trim();
+  if (!text || !currentSessionId) return;
+  chatLoading = true; $('sendBtn').disabled = true;
+  input.value = '';
+  $('msgArea').insertAdjacentHTML('beforeend', msgHtml('user', text));
+  const aiBubble = document.createElement('div');
+  aiBubble.className = 'msg assistant';
+  aiBubble.innerHTML = '<span class="typing">…</span>';
+  $('msgArea').appendChild(aiBubble);
+  $('msgArea').scrollTop = $('msgArea').scrollHeight;
   try {
     const resp = await fetch(`/api/chat/sessions/${currentSessionId}/stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token() },
-      body: JSON.stringify({ content })
+      body: JSON.stringify({ content: text })
     });
-    if (!resp.ok || !resp.body) throw new Error('连接失败');
-    const reader = resp.body.getReader(), decoder = new TextDecoder();
-    let buf = '', full = '';
-    const el = $('streamingMsg');
-    while (true) {
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '', content = '', finished = false;
+    while (!finished) {
       const { done, value } = await reader.read();
       if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const parts = buf.split('\n\n'); buf = parts.pop();
-      for (const part of parts) {
-        const dataLines = part.split('\n').filter(l => l.startsWith('data:')).map(l => l.slice(5).replace(/^ /, ''));
-        if (!dataLines.length) continue;
-        const data = dataLines.join('\n');   // 多行内容按 SSE 规范还原换行
-        if (data === '[DONE]') continue;
-          full += data;
-          if (el) { el.textContent = full; area.scrollTop = area.scrollHeight; }
-        }
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();           // 最后一行可能不完整，留在缓冲区
+      for (const rawLine of lines) {
+        const line = rawLine.replace(/\r$/, '');
+        // 后端 SseEmitter 推的是纯文本 token：一行一个 data:
+        if (!line.startsWith('data:')) continue;
+        let data = line.slice(5);
+        if (data.startsWith(' ')) data = data.slice(1);  // SSE 规范：冒号后最多一个空格，其余属于内容
+        if (data === '[DONE]') { finished = true; break; }
+        // Spring 会把 token 里的换行拆成多个 data: 行，空载荷即代表一个换行
+        content += (data === '' ? '\n' : data);
       }
+      aiBubble.textContent = content;
+      $('msgArea').scrollTop = $('msgArea').scrollHeight;
     }
-    loadSessions();
+    if (!content) aiBubble.textContent = 'AI 暂时没有回复，请稍后再试';
   } catch (e) {
-    const el = $('streamingMsg');
-    if (el && !el.textContent.trim().length) el.textContent = '（网络异常，请重试）';
-    toast('网络异常：' + e.message);
-  } finally {
-    chatLoading = false; $('sendBtn').disabled = false;
+    aiBubble.textContent = '发送失败: ' + e.message;
   }
+  chatLoading = false; $('sendBtn').disabled = false;
+  await loadSessions();
 }
-$('chatInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
 
-/* ================= 情绪 ================= */
-const MOODS = [[1, '😢'], [2, '😟'], [3, '😐'], [4, '🙂'], [5, '😄']];
-const TAGS = ['开心', '平静', '焦虑', '低落', '愤怒', '疲惫', '压力大', '充实', '孤独', '感恩'];
-let selMood = 3; const selTags = new Set();
-let moodChart = null, tagChart = null;
-
+let selMood = 3, selTags = new Set();
 function initEmotion() {
   $('emoDate').value = new Date().toISOString().slice(0, 10);
-  $('moodRow').innerHTML = MOODS.map(([v, e]) =>
-    `<button class="mood-opt ${v === selMood ? 'sel' : ''}" data-mood="${v}" onclick="pickMood(${v})">${e}</button>`).join('');
-  $('tagRow').innerHTML = TAGS.map(t =>
-    `<span class="tag-chip" onclick="pickTag(this,'${t}')">${t}</span>`).join('');
+  const moods = ['😞','😔','😐','🙂','😄'];
+  $('moodRow').innerHTML = moods.map((m, i) => `<button class="mood-opt ${i+1===3?'sel':''}" onclick="pickMood(${i+1})">${m}</button>`).join('');
+  const tags = ['平静','开心','焦虑','压力大','疲惫','迷茫','孤独','愤怒','恐惧','感激'];
+  $('tagRow').innerHTML = tags.map(t => `<span class="tag-chip" onclick="pickTag(this,'${t}')">${t}</span>`).join('');
   loadEmotionData();
 }
-function pickMood(v) { selMood = v; document.querySelectorAll('.mood-opt').forEach(b => b.classList.toggle('sel', +b.dataset.mood === v)); }
+function pickMood(v) { selMood = v; document.querySelectorAll('.mood-opt').forEach(b => b.classList.toggle('sel', b === document.querySelectorAll('.mood-opt')[v-1])); }
 function pickTag(el, t) { el.classList.toggle('sel'); selTags.has(t) ? selTags.delete(t) : selTags.add(t); }
 
 async function saveEmotion() {
   try {
-    await api('/api/emotion', 'POST', {
-      date: $('emoDate').value, mood: selMood, tags: [...selTags], content: $('emoContent').value
-    });
-    toast('已保存今日心情 💚');
-    $('emoContent').value = '';
-    loadEmotionData();
+    await api('/api/emotion', 'POST', { mood: selMood, tags: Array.from(selTags), diary: $('emoContent').value, recordDate: $('emoDate').value });
+    toast('记录已保存'); $('emoContent').value = ''; selTags.clear();
+    document.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('sel'));
+    await loadEmotionData();
   } catch (e) { toast(e.message); }
 }
-async function loadEmotionData() {
-  const stats = await api('/api/emotion/stats?days=14');
-  const list = await api('/api/emotion/list');
-  $('statAvg').textContent = stats.avgMood || '-';
-  $('statCount').textContent = stats.count;
 
-  if (window.echarts) {
-    moodChart = moodChart || echarts.init($('moodChart'));
+let moodChart, tagChart;
+async function loadEmotionData() {
+  try {
+    const data = await api('/api/emotion/stats?days=14');
+    $('statAvg').textContent = data.avgMood != null ? data.avgMood.toFixed(1) : '-';
+    $('statCount').textContent = data.recordDays || 0;
+    const dates = (data.dailyStats || []).map(d => d.date.slice(5));
+    const moods = (data.dailyStats || []).map(d => d.avgMood);
+    if (!moodChart) moodChart = echarts.init($('moodChart'));
     moodChart.setOption({
       tooltip: { trigger: 'axis' },
-      grid: { left: 40, right: 16, top: 24, bottom: 28 },
-      xAxis: { type: 'category', data: stats.trend.map(t => t.date.slice(5)) },
-      yAxis: { type: 'value', min: 0, max: 5 },
-      series: [{ type: 'line', data: stats.trend.map(t => t.mood), smooth: true, areaStyle: { opacity: .15 }, itemStyle: { color: '#5b7cfa' } }]
+      grid: { left: 30, right: 20, top: 20, bottom: 30 },
+      xAxis: { type: 'category', data: dates, axisLabel: { fontSize: 11 } },
+      yAxis: { type: 'value', min: 1, max: 5, axisLabel: { fontSize: 11 } },
+      series: [{ data: moods, type: 'line', smooth: true, itemStyle: { color: '#5b7cfa' }, areaStyle: { color: 'rgba(91,124,250,0.1)' } }]
     });
-    tagChart = tagChart || echarts.init($('tagChart'));
+    const tagNames = Object.keys(data.tagCounts || {});
+    const tagVals = tagNames.map(k => data.tagCounts[k]);
+    if (!tagChart) tagChart = echarts.init($('tagChart'));
     tagChart.setOption({
-      tooltip: {},
-      grid: { left: 70, right: 20, top: 8, bottom: 24 },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 70, right: 20, top: 20, bottom: 20 },
       xAxis: { type: 'value' },
-      yAxis: { type: 'category', data: stats.tags.map(t => t.name).reverse() },
-      series: [{ type: 'bar', data: stats.tags.map(t => t.count).reverse(), itemStyle: { color: '#8fa5ff' }, barWidth: 14 }]
+      yAxis: { type: 'category', data: tagNames },
+      series: [{ data: tagVals, type: 'bar', itemStyle: { color: '#7c92ff' } }]
     });
-  }
-  $('diaryList').innerHTML = list.length ? list.map(r => `
-    <div class="diary-item">
-      <div class="meta">${r.date} · 心情 ${'★'.repeat(r.mood)}${'☆'.repeat(5 - r.mood)} ${r.tags ? '· ' + r.tags : ''}</div>
-      <div>${escapeHtml(r.content || '')}</div>
-    </div>`).join('') : '<div style="color:#9aa2b5;font-size:13px">还没有记录，先记一条吧～</div>';
+    $('diaryList').innerHTML = (data.diaries || []).slice(-10).reverse().map(d => `<div class="diary-item"><div class="meta">📅 ${d.date}</div>${escapeHtml(d.content || '（无日记）')}</div>`).join('') || '<div style="color:#9aa2b5;font-size:13px">还没有日记记录</div>';
+  } catch (e) { console.error(e); }
 }
 
-/* ================= 测评 ================= */
 async function loadScales() {
-  const scales = await api('/api/assessment/scales');
-  $('scaleGrid').innerHTML = `<h3 style="margin-bottom:14px;color:#3d4a9e">🧭 选择一份量表开始测评</h3>` + scales.map(s => `
-    <div class="scale-card"><h3>${s.name}</h3><p>${s.description}</p>
-    <button class="btn-primary" onclick="startScale('${s.code}')">开始测评</button></div>`).join('');
-  $('scaleGrid').className = 'scale-grid';
-}
-async function startScale(code) {
-  currentScale = await api(`/api/assessment/scales/${code}`);
-  quizAnswers = new Array(JSON.parse(currentScale.questionsJson).length).fill(null);
-  renderQuiz();
-}
-function renderQuiz() {
-  const questions = JSON.parse(currentScale.questionsJson);
-  $('scaleGrid').classList.add('hidden');
-  const qv = $('quizView'); qv.classList.remove('hidden');
-  qv.innerHTML = `<h3 style="color:#3d4a9e;margin-bottom:6px">${currentScale.name}</h3>
-    <p style="font-size:13px;color:#8a92a6;margin-bottom:18px">${currentScale.instruction}</p>` +
-    questions.map((q, i) => `
-      <div class="quiz-q">
-        <div class="qtext">${i + 1}. ${q.text}</div>
-        <div class="quiz-opts">${q.options.map((o, j) =>
-          `<span class="quiz-opt" id="q${i}o${j}" onclick="pickOpt(${i},${j})">${o.label}</span>`).join('')}</div>
-      </div>`).join('') +
-    `<div style="display:flex;gap:10px;margin-top:18px">
-       <button class="btn-ghost" onclick="backToScales()">返回</button>
-       <button class="btn-primary" style="flex:1" onclick="submitScale()">提交答卷</button>
-     </div>`;
-}
-function pickOpt(i, j) {
-  quizAnswers[i] = j;
-  document.querySelectorAll(`[id^="q${i}o"]`).forEach(el => el.classList.remove('sel'));
-  $(`q${i}o${j}`).classList.add('sel');
-}
-function backToScales() { $('quizView').classList.add('hidden'); $('scaleGrid').classList.remove('hidden'); }
-async function submitScale() {
-  if (quizAnswers.includes(null)) { toast('还有题目未作答'); return; }
   try {
-    const record = await api(`/api/assessment/scales/${currentScale.code}/submit`, 'POST', { answers: quizAnswers });
-    $('quizView').innerHTML = `
-      <h3 style="color:#3d4a9e">测评完成：${record.scaleName}
-        <span class="severity-pill ${sevClass(record.score, record.scaleCode)}">${record.severity}</span></h3>
-      <div style="margin-top:10px;font-size:26px;color:#3d4a9e">${record.score} <span style="font-size:14px;color:#8a92a6">分</span></div>
-      <div class="report-box">${escapeHtml(record.report)}</div>
-      <div style="display:flex;gap:10px;margin-top:16px">
-        <button class="btn-ghost" onclick="backToScales();loadScales()">返回量表列表</button>
-        <button class="btn-primary" onclick="switchTab('report')">查看我的报告</button>
-      </div>`;
-    toast('测评完成 💚');
+    const scales = await api('/api/assessment/scales');
+    $('scaleGrid').innerHTML = scales.map(s => `<div class="scale-card"><h3>${s.name}</h3><p>${s.description || ''}</p><button class="btn-primary" style="align-self:flex-start" onclick="startScale('${s.code}')">开始测试</button></div>`).join('');
+  } catch (e) { console.error(e); }
+}
+
+async function startScale(code) {
+  try {
+    const scale = await api(`/api/assessment/scales/${code}`);
+    // 后端 JPA 实体返回的是 questionsJson（JSON 字符串），前端需要手动 parse
+    if (scale.questionsJson) {
+      try { scale.questions = JSON.parse(scale.questionsJson); } catch(e) { scale.questions = []; }
+    }
+    currentScale = scale; quizAnswers = [];
+    renderQuiz();
+    $('scaleGrid').style.display = 'none';
+    $('quizView').classList.remove('hidden');
   } catch (e) { toast(e.message); }
 }
+
+function renderQuiz() {
+  const questions = Array.isArray(currentScale.questions) ? currentScale.questions : [];
+  let html = `<h3 style="text-align:center;color:#3d4a9e;margin-bottom:20px">${escapeHtml(currentScale.name || '')}</h3>`;
+  if (!questions.length) {
+    html += '<div style="text-align:center;color:#9aa2b5">题目加载失败，请稍后重试</div>';
+  }
+  questions.forEach((q, i) => {
+    const qText = typeof q === 'string' ? q
+      : (q.text || q.title || q.question || q.content || q.label || `第 ${i + 1} 题`);
+    const options = Array.isArray(q && q.options) ? q.options : [];
+    html += `<div class="quiz-q"><div class="qtext">${i + 1}. ${escapeHtml(qText)}</div><div class="quiz-opts">`;
+    options.forEach((opt, j) => {
+      html += `<span class="quiz-opt ${quizAnswers[i] === j ? 'sel' : ''}" onclick="pickOpt(${i},${j})">${escapeHtml(optLabel(opt, j))}</span>`;
+    });
+    html += '</div></div>';
+  });
+  html += `<div style="text-align:center;margin-top:16px"><button class="btn-primary" onclick="submitScale()">提交</button>
+    <button class="btn-ghost" style="margin-left:8px" onclick="backToScales()">返回</button></div>`;
+  $('quizView').innerHTML = html;
+}
+
+/**
+ * 取选项显示文字。
+ * 后端 questionsJson 里的 options 是对象数组：[{"label":"完全不会","score":0}, ...]
+ * 直接 ${opt} 会渲染成 [object Object]，所以这里按常见字段名逐个兜底。
+ */
+function optLabel(opt, idx) {
+  if (opt === null || opt === undefined) return `选项 ${idx + 1}`;
+  if (typeof opt === 'string') return opt;
+  if (typeof opt === 'number') return String(opt);
+  if (typeof opt !== 'object') return String(opt);
+  const keys = ['label', 'text', 'content', 'value', 'name', 'title', 'desc', 'description', 'option'];
+  for (const k of keys) {
+    const v = opt[k];
+    if (typeof v === 'string' && v.trim()) return v;
+  }
+  for (const v of Object.values(opt)) {
+    if (typeof v === 'string' && v.trim()) return v;
+  }
+  return `选项 ${idx + 1}`;
+}
+
+function pickOpt(i, j) { quizAnswers[i] = j; renderQuiz(); }
+
+function backToScales() { $('quizView').classList.add('hidden'); $('scaleGrid').style.display = 'grid'; }
+
+async function submitScale() {
+  const total = (currentScale.questions || []).length;
+  for (let i = 0; i < total; i++) {
+    if (quizAnswers[i] === undefined || quizAnswers[i] === null) { toast(`第 ${i + 1} 题还没作答`); return; }
+  }
+  try {
+    // 后端路径是 POST /api/assessment/scales/{code}/submit，code 在 URL 里
+    const rec = await api(`/api/assessment/scales/${currentScale.code}/submit`, 'POST', { answers: quizAnswers });
+    $('quizView').innerHTML = `<h3 style="text-align:center;color:#3d4a9e">${currentScale.name} 完成</h3>
+      <p style="text-align:center;font-size:20px;margin-top:12px">得分：<b style="color:#3d4a9e;font-size:32px">${rec.score}</b> 分
+      <span class="severity-pill ${sevClass(rec.score, currentScale.code)}">${rec.severity}</span></p>
+      <div class="report-box">${rec.report || rec.aiSuggestion || ''}</div>
+      <div style="text-align:center;margin-top:16px"><button class="btn-primary" onclick="switchTab('report')">查看我的报告</button>
+      <button class="btn-ghost" style="margin-left:8px" onclick="backToScales();loadSessions()">返回测评列表</button></div>`;
+  } catch (e) { toast(e.message); }
+}
+
 function sevClass(score, code) {
-  if (code === 'PHQ9') return score >= 15 ? 'sev-high' : score >= 5 ? 'sev-mid' : 'sev-low';
-  if (code === 'GAD7') return score >= 15 ? 'sev-high' : score >= 5 ? 'sev-mid' : 'sev-low';
-  return score >= 27 ? 'sev-high' : score >= 14 ? 'sev-mid' : 'sev-low';
+  const low = code === 'PHQ9' ? 4 : code === 'GAD7' ? 4 : 5;
+  const mid = code === 'PHQ9' ? 9 : code === 'GAD7' ? 9 : 14;
+  if (score <= low) return 'sev-low';
+  if (score <= mid) return 'sev-mid';
+  return 'sev-high';
 }
 
-/* ================= 报告 ================= */
 async function loadRecords() {
-  const records = await api('/api/assessment/records');
-  $('recordList').innerHTML = records.length ? records.map(r => `
-    <div class="record-item" onclick="viewRecord(${r.id})">
-      <div class="info"><div class="name">${r.scaleName} · ${r.score} 分 · ${r.severity}</div>
-      <div class="time">${r.createdAt.replace('T', ' ').slice(0, 16)}</div></div>
-      <span style="color:#8a92a6;font-size:13px">查看报告 →</span>
-    </div>`).join('') : '<div style="color:#9aa2b5;font-size:13px">还没有测评记录，去「心理测评」页做一份吧</div>';
-  $('recordDetail').classList.add('hidden');
+  try {
+    const list = await api('/api/assessment/records');
+    $('recordList').innerHTML = list.length ? list.map(r => `<div class="record-item" onclick="viewRecord(${r.id})"><div class="info"><div class="name">${r.scaleName}</div><div class="time">${r.createdAt} · ${r.score} 分</div></div><span>→</span></div>`).join('') : '<div class="card" style="text-align:center;color:#9aa2b5">还没有测评记录，去心理测评 tab 开始第一次吧</div>';
+    $('recordDetail').classList.add('hidden');
+  } catch (e) { console.error(e); }
 }
+
 async function viewRecord(id) {
-  const r = await api(`/api/assessment/records/${id}`);
-  const d = $('recordDetail');
-  d.classList.remove('hidden');
-  d.textContent = r.report;
-  d.scrollIntoView({ behavior: 'smooth' });
+  try {
+    const r = await api(`/api/assessment/records/${id}`);
+    $('recordDetail').classList.remove('hidden');
+    $('recordDetail').innerHTML = `<h3 style="margin-bottom:10px">${r.scaleName} · ${r.score} 分 · ${r.severity}</h3><div>完成时间：${r.createdAt}</div>
+      <div class="report-box">${r.report || r.aiSuggestion || '（暂无建议）'}</div>`;
+  } catch (e) { toast(e.message); }
 }
 
-/* ================= Tab 切换 ================= */
 function switchTab(name) {
-  document.querySelectorAll('nav .tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-  ['chat', 'emotion', 'assess', 'report'].forEach(n => $('tab-' + n).classList.toggle('hidden', n !== name));
-  if (name === 'emotion') loadEmotionData();
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(s => s.classList.toggle('hidden', s.id !== 'tab-' + name));
   if (name === 'report') loadRecords();
+  if (name === 'emotion') { initEmotion(); if (moodChart) moodChart.resize(); if (tagChart) tagChart.resize(); }
 }
 
-/* ================= 启动 ================= */
 (function init() {
-  if (token()) {
-    $('authView').classList.add('hidden');
-    $('appView').classList.remove('hidden');
-    $('nickname').textContent = '👋 ' + (localStorage.getItem(NICK_KEY) || '');
-    initChat(); initEmotion(); loadScales();
+  if (token() && !location.search.includes('logout')) {
+    api('/api/auth/me').then(d => {
+      localStorage.setItem(NICK_KEY, d.nickname);
+      $('authView').classList.add('hidden');
+      $('appView').classList.remove('hidden');
+      $('nickname').textContent = '👋 ' + d.nickname;
+      initChat(); initEmotion(); loadScales();
+    }).catch(() => logout());
   }
 })();
 </script>
